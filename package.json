@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/kmboard/ETracker/issues"
   },
-  "homepage": "https://github.com/kmboard/ETracker#readme"
+  "homepage": "https://github.com/kmboard/ETracker#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
 }
