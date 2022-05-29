@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
 
 const PORT = process.env.PORT || 3001;
@@ -22,8 +22,6 @@ const db = mysql.createConnection(
         if (err) throw err;
       mainMenu();
     });
-
-
 
 
 function mainMenu() {
@@ -81,11 +79,11 @@ function mainMenu() {
 };
 
 viewEmployees = () => {
-    const sql = `Select employee.id, employee.first_name, employee.last_name, role.title, department.department_name, role.salary CONCAT (manager.first_name, "", manager.last_name) manager
-        FROM employee
-        LEFT JOIN employee.role.id=role.id
-        LEFT JOIN department ON role.department_id=department.id
-        LEFT JOIN employee manager ON employee.manager_id=manager.id`
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name, role.salary CONCAT (manager.first_name, "", manager.last_name) manager
+    FROM employee
+    LEFT JOIN employee.role.id=role.id
+    LEFT JOIN department ON role.department_id=department.id
+    LEFT JOIN employee manager ON employee.manager_id=manager.id`
     db.query(sql, (err, res) => {
         if (err) throw err;
         mainMenu();
