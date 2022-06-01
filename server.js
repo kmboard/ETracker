@@ -28,26 +28,25 @@ function mainMenu() {
         {
             type: 'list',
             message: 'What would you like to do',
-            name: 'choice',
+            name: 'user',
             choices: [
-                'View Employee',
+                'View Employees',
                 'Add Employee',
                 'Update Employee Role',
                 'View All Roles',
                 'Add Role',
-                'View Deparetent',
+                'View Department',
                 'Add Department',
                 'Quit']
         },
     ])
         .then((answers) => {
-            if (answers.user === "View Employee") {
-                viewEmployee();
+            if (answers.user === "View Employees") {
+                viewEmployees();
             }
 
             if (answers.user === "Add Employee") {
                 addEmployee();
-
             }
 
             if (answers.user === "Update Role") {
@@ -62,7 +61,7 @@ function mainMenu() {
                 addRole();
             }
 
-            if (answers.user === "View Departments") {
+            if (answers.user === "View Department") {
                 viewDepartment();
             }
 
@@ -80,7 +79,7 @@ function mainMenu() {
 
 
 
-viewEmployee = () => {
+viewEmployees = () => {
     const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, CONCAT (manager.first_name, "", manager.last_name) manager
     FROM employee
     LEFT JOIN role ON employee.role_id=role.id
@@ -96,6 +95,7 @@ viewEmployee = () => {
 viewDepartment = () => {
     const sql = `SELECT * FROM department`;
     db.query(sql, (err, res) => {
+        console.table(res);
         if (err) throw err;
         mainMenu()
     });
@@ -104,6 +104,7 @@ viewDepartment = () => {
 viewRole = () => {
     const sql = `SELECT * FROM role`;
     db.query(sql, (err, res) => {
+        console.table(res)
         if (err) throw err;
         mainMenu()
     });
@@ -145,7 +146,7 @@ addEmployee = () => {
             if (err) throw err;
             mainMenu();
         })
-     const roles = input.map(({ id, title }) => ({ name: title, valute: id }))
+     const roles = results.map(({ id, title }) => ({ name: title, valute: id }))
 
             inquirer.prompt([
                 {
@@ -211,20 +212,20 @@ addRole = () => {
         const departmentStatement = `SELECT * FROM department`;
             db.query(departmentStatement, (err, results) => {
             if (err) throw err;
-        const departments = results.map(({ id, name }) => ({ name: name, value: id, }));
+        const department = results.map(({ id, name }) => ({ name: name, value: id, }));
             inquirer.prompt([
          {
             type: 'list',
             name: 'department',
             message: "What department does the role belong to?",
-            choices: departments
+            choices: department
         }
      ])
             .then(departmentChoice => {
             const department = departmentChoice.department;
                 queryParams.push(department);
 
-            const sqlStatement = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+            const sqlStatement = `INSERT INTO role (role, salary, department_id) VALUES (?, ?, ?)`;
             db.query(sqlStatement, queryParams, (err, result) => {
              if (err) throw err;
 
