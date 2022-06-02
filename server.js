@@ -173,12 +173,12 @@ addEmployee = () => {
                             .then(managerChoice => {
                                 const manager = managerChoice.manager
                                 queryParams.push(manager);
-                                const sqlStatement = `INSERT INTO employee VALUES (?, ?, ?, ?)`;
+                                const sqlStatement = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
                                 db.query(sqlStatement, queryParams, (err, res) => {
                                     if (err) throw err;
                                     viewEmployees();
                                 });
-                                mainMenu();
+                               return mainMenu();
                             });
                     });
                 });
@@ -250,13 +250,13 @@ updateRole = () => {
             const sql = `SELECT * FROM role`;
                 db.query(sql, (err, res) => {
                 if (err) throw err;
-            const roles = res.map(({ id, title }) => ({ name: title, value: id }));
+            const role = res.map(({ id, title }) => ({ name: title, value: id }));
                 inquirer.prompt([
                     {
                         type: "list",
                         name: "role",
                         message: "What is the new role of the Employee?",
-                        choices: roles
+                        choices: role
                   }
                 ])
                     .then(roleAnswer => {
@@ -267,8 +267,9 @@ updateRole = () => {
                                 WHERE id = ?`
                     db.query(sql, params, (err) => {
                     if (err) { throw err; }
+                    viewEmployees(); 
                 });                
-                    return viewEmployees();                    
+                 return mainMenu();                    
             })
           })
         })
