@@ -142,12 +142,9 @@ addEmployee = () => {
     ]).then(answer => {
         const queryParams = [answer.firstName, answer.lastName]
         const roleStatment = `SELECT role.id, role.title FROM role`;
-        db.query(roleStatment, (err, results) => {
+        db.query(roleStatment, (err, res) => {
             if (err) throw err;
-            mainMenu();
-        })
-     const roles = results.map(({ id, title }) => ({ name: title, valute: id }))
-
+          const roles = res.map(({ id, title }) => ({ name: title, valute: id }))
             inquirer.prompt([
                 {
                     name: 'role',
@@ -180,17 +177,17 @@ addEmployee = () => {
                             .then(managerChoice => {
                                 const manager = managerChoice.manager
                                 queryParams.push(manager);
-                                const sqlStatement = `INSERT INTO employee (first_name, last_name, role_id, maanger_id)
-                        VALUES (?, ?, ?)`;
+                                const sqlStatement = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
                                 db.query(sqlStatement, queryParams, (err, result) => {
                                     if (err) throw err;
                                     viewEmployees();
                                 });
+                                mainMenu();
                             });
                     });
                 });
             })
-    
+        })
 };
 
 
