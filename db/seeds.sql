@@ -4,7 +4,7 @@ VALUES ("HR"),
         ("Marketing"),
         ("IT");
 
-INSERT INTO role (role, salary, department_id)
+INSERT INTO `role` (role_id, salary, department_id)
     VALUES ('IT manager', 250000, 1),
            ('Payroll', 150000, 1),
            ('Marketing Dirctor', 200000, 1),
@@ -15,5 +15,5 @@ INSERT INTO role (role, salary, department_id)
            ('Resptionist',85000, 1);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-    VALUES  ('Lewis', 'Reggie', 1,  NULL),
-            ('Reggie', 'Lewis', 1, 1);
+    VALUES  ('Lewis', 'Reggie', Manager,  NULL),
+            ('Reggie', 'Lewis', Assistant Manager, 1);

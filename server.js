@@ -80,11 +80,7 @@ function mainMenu() {
 
 
 viewEmployees = () => {
-    const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, CONCAT (manager.first_name, "", manager.last_name) manager
-    FROM employee
-    LEFT JOIN role ON employee.role_id=role.id
-    LEFT JOIN department ON role.department_id=department.id
-    LEFT JOIN employee manager ON employee.manager_id=manager.id`
+    const sql = `Select * From employee`;
     db.query(sql, (err, res) => {
         console.table(res)
         if (err) throw err;
@@ -119,7 +115,7 @@ addDepartment = () => {
         }
     ])
         .then(answer => {
-            const sql = `INSERT INTO department (name) VALUES (?)`;
+            const sql = `INSERT INTO department VALUES (?)`;
             db.query(sql, answer.department, (err, res) => {
                 if (err) throw err;
             })
@@ -141,16 +137,16 @@ addEmployee = () => {
         },
     ]).then(answer => {
         const queryParams = [answer.firstName, answer.lastName]
-        const roleStatment = `SELECT role.id, role.title FROM role`;
-        db.query(roleStatment, (err, res) => {
+        const roleStatement = `SELECT * FROM role`;
+        db.query(roleStatement, (err, res) => {
             if (err) throw err;
-          const roles = res.map(({ id, title }) => ({ name: title, valute: id }))
+          const role = res.map(({ id, role }) => ({ name: role, value: id}))
             inquirer.prompt([
                 {
                     name: 'role',
                     type: 'list',
                     message: 'What is the role of the Employee?',
-                    choices: roles
+                    choices: role
                 }
             ])
 
@@ -160,9 +156,9 @@ addEmployee = () => {
 
                     const managerStatement = `SELECT * FROM employee`;
 
-                    db.query(managerStatement, (err, results) => {
+                    db.query(managerStatement, (err, res) => {
                         if (err) throw err;
-                        const managers = results.map(({ id, first_name, last_name }) => ({ name: first_name + " " + last_name, value: id }));
+                        const managers = res.map(({ name, first_name, last_name }) => ({ name: first_name + " " + last_name, value: name }));
                         managers.push({ name: "None", value: null });
 
                         inquirer.prompt
@@ -170,15 +166,15 @@ addEmployee = () => {
                                 {
                                     type: 'list',
                                     name: 'manager',
-                                    message: "Whoe is the employee's manager?",
+                                    message: "Who is the employee's manager?",
                                     choices: managers
                                 }
                             ])
                             .then(managerChoice => {
                                 const manager = managerChoice.manager
                                 queryParams.push(manager);
-                                const sqlStatement = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
-                                db.query(sqlStatement, queryParams, (err, result) => {
+                                const sqlStatement = `INSERT INTO employee VALUES (?, ?, ?, ?)`;
+                                db.query(sqlStatement, queryParams, (err, res) => {
                                     if (err) throw err;
                                     viewEmployees();
                                 });
@@ -207,9 +203,9 @@ addRole = () => {
      .then(answer => {
         const queryParams = [answer.role, answer.salary];
         const departmentStatement = `SELECT * FROM department`;
-            db.query(departmentStatement, (err, results) => {
+            db.query(departmentStatement, (err, res) => {
             if (err) throw err;
-        const department = results.map(({ id, name }) => ({ name: name, value: id, }));
+        const department = res.map(({ id, name }) => ({ name: name, value: id, }));
             inquirer.prompt([
          {
             type: 'list',
@@ -222,7 +218,7 @@ addRole = () => {
             const department = departmentChoice.department;
                 queryParams.push(department);
 
-            const sqlStatement = `INSERT INTO role (role, salary, department_id) VALUES (?, ?, ?)`;
+            const sqlStatement = `INSERT INTO role (role_id, salary, department_id) VALUES (?, ?, ?)`;
             db.query(sqlStatement, queryParams, (err, result) => {
              if (err) throw err;
 
