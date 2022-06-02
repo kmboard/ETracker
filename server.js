@@ -32,7 +32,7 @@ function mainMenu() {
             choices: [
                 'View Employees',
                 'Add Employee',
-                'Update Employee Role',
+                'Update Role',
                 'View All Roles',
                 'Add Role',
                 'View Department',
@@ -240,7 +240,7 @@ updateRole = () => {
     const sql = `SELECT *  FROM employee`;
     db.query(sql, (err, res) => {
         if (err) throw err;
-    const employees = results.map(({ first_name, last_name, id }) =>
+    const employees = res.map(({ first_name, last_name, id }) =>
                     ({ name: `${first_name} ${last_name}`, value: id }));
      inquirer.prompt([
           {
@@ -257,7 +257,7 @@ updateRole = () => {
             const sql = `SELECT * FROM role`;
                 db.query(sql, (err, res) => {
                 if (err) throw err;
-            const roles = results.map(({ id, title }) => ({ name: title, value: id }));
+            const roles = res.map(({ id, title }) => ({ name: title, value: id }));
                 inquirer.prompt([
                     {
                         type: "list",
@@ -269,7 +269,7 @@ updateRole = () => {
                     .then(roleAnswer => {
                     const role = roleAnswer.role;
                     params.unshift(role);
-                    const sql = `UPDATE employees
+                    const sql = `UPDATE employee
                                 SET role_id = ?
                                 WHERE id = ?`
                     db.query(sql, params, (err) => {
